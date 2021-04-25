@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  webapp:
+    build: .
+    networks:
+      - appnet
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80/tcp"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./frontend/static:/var/www/comengess/static
+    networks:
+      - appnet
+    depends_on:
+      - webapp
+
+networks:
+  appnet:

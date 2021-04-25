@@ -3,7 +3,11 @@
 from flask import Flask, render_template
 import config
 
-app = Flask(config.APP_NAME, template_folder='./frontend')
+app = Flask(
+    config.APP_NAME, 
+    template_folder='./frontend',
+    static_folder='./frontend/static',
+)
 
 @app.route("/")
 def root():

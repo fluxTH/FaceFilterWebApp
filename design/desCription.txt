@@ -1,0 +1,10 @@
+Fonts:
+Script -> Tangerine
+San Serif -> Arvo
+
+Colors (Hex):
+1A535C
+4ECDC4
+F7FFF7
+FF6B6B
+FFE66D

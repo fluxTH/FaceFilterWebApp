@@ -1,6 +1,10 @@
+from os.path import abspath
+
 APP_NAME = 'ComEngApp WebApp'
 
 DATABASE_URI = 'sqlite:///database.sqlite3'
+
+PROJECT_PATH = abspath('.')
 
 TEMPLATE_PATH = './frontend'
 STATIC_PATH = './frontend/static'

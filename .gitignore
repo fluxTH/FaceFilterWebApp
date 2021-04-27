@@ -4,4 +4,8 @@ env/
 __pycache__/
 .vscode/
 
-.DS_Store/
+.DS_Store
+
+media/
+database.sqlite3
+test/

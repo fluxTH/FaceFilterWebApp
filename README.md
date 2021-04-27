@@ -1,6 +1,7 @@
 # Development Server
 ```bash
 pip3 install -r requirements.txt
+./initialize.py
 ./server.py
 ```
 

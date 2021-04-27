@@ -3,6 +3,8 @@ version: "3"
 services:
   webapp:
     build: .
+    volumes:
+      - .:/usr/src/app
     networks:
       - appnet
   
@@ -13,10 +15,9 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./frontend/static:/var/www/comengess/static
+      - ./data:/var/www/comengess/data
     networks:
       - appnet
-    depends_on:
-      - webapp
 
 networks:
   appnet:

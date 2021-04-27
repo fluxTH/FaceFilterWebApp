@@ -7,6 +7,7 @@ from flask import (
     abort, 
     jsonify,
     send_from_directory,
+    url_for,
 )
 from flask_sqlalchemy import SQLAlchemy
 
@@ -39,6 +40,7 @@ class ImageItem(db.Model):
     image_filename = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+
 ### HELPER FUNCTIONS
 
 def map_image_item(item):
@@ -70,7 +72,6 @@ def root():
 
 @app.route("/api/upload", methods=['POST'])
 def api_upload():
-    print(request.files)
     if 'image' not in request.files:
         return error_resp('Input image not present')
 
@@ -104,9 +105,7 @@ def api_upload():
         db.session.commit()
 
         return success_resp({
-            'image_url': '/media/{}'.format(
-                filename,
-            ),
+            'image_url': url_for('serve_processed_media', path=filename),
         })
 
     return error_resp('Image processing failed, please try again later')
@@ -118,9 +117,15 @@ def api_list_images():
         'data': list(map(map_image_item, items)),
     })
 
-@app.route("/media/<path:path>")
-def serve_media(path):
+@app.route("/media/proc/<path:path>")
+def serve_processed_media(path):
     return send_from_directory(config.PROCESSED_MEDIA_PATH, path)
+
+@app.route("/media/orig/<path:path>")
+def serve_original_media(path):
+    return send_from_directory(config.ORIGINAL_MEDIA_PATH, path)
+
+### DEBUG SERVER ENTRYPOINT
 
 if __name__ == "__main__":
     # run debug server

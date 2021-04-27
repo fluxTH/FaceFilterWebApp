@@ -100,7 +100,7 @@ def api_upload():
     )
     
     input_image.save(os.path.join(config.ORIGINAL_MEDIA_PATH, filename))
-    success = True # process(input_image.stream, filename)
+    success = API.process(filename)
 
     if success:
         try:
@@ -137,6 +137,10 @@ def serve_original_media(path):
 
 
 ### DEBUG SERVER ENTRYPOINT
+
+@app.route("/api/test")
+def test():
+    return API.test()
 
 if __name__ == "__main__":
     # run debug server

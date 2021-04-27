@@ -88,7 +88,9 @@ def api_upload():
 
     extension = input_image.filename.split('.')[-1]
     if extension not in config.ALLOWED_EXTENSIONS:
-        return error_resp('Extension not allowed')
+        return error_resp('Extension not allowed, only "{}" are allowed'.format(
+            ', '.join(config.ALLOWED_EXTENSIONS)
+        ))
 
     filename = '{}.{}.{}'.format(
         str(uuid.uuid4()),
@@ -124,6 +126,7 @@ def serve_processed_media(path):
 @app.route("/media/orig/<path:path>")
 def serve_original_media(path):
     return send_from_directory(config.ORIGINAL_MEDIA_PATH, path)
+
 
 ### DEBUG SERVER ENTRYPOINT
 

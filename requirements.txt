@@ -2,3 +2,4 @@ flask
 uwsgi
 sqlalchemy
 flask-sqlalchemy
+face_recognition

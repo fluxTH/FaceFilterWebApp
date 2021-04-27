@@ -36,9 +36,8 @@ db = SQLAlchemy(app)
 class ImageItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), nullable=False)
-    image_path = db.Column(db.String(255), nullable=False)
+    image_filename = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
 
 ### HELPER FUNCTIONS
 
@@ -46,7 +45,7 @@ def map_image_item(item):
     return {
         'id': item.id,
         'username': item.username,
-        'image_url': item.image_path,
+        'image_url': f'/media/{item.image_filename}',
         'timestamp': str(item.timestamp),
     }
 
@@ -82,7 +81,6 @@ def api_upload():
         return error_resp('Please fill all the required fields')
 
     input_image = request.files['image']
-    print(input_image.filename)
 
     if not '.' in input_image.filename:
         return error_resp('Invalid filename')
@@ -97,13 +95,16 @@ def api_upload():
         extension,
     )
     
-    input_image.save(os.path.join(config.PROCESSED_MEDIA_PATH, filename))
+    input_image.save(os.path.join(config.ORIGINAL_MEDIA_PATH, filename))
     success = True # process(input_image.stream, filename)
 
     if success:
+        image_item = ImageItem(username=username, image_filename=filename)
+        db.session.add(image_item)
+        db.session.commit()
+
         return success_resp({
-            'image_url': '/{}/{}'.format(
-                config.PROCESSED_MEDIA_PATH,
+            'image_url': '/media/{}'.format(
                 filename,
             ),
         })

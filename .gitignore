@@ -6,6 +6,8 @@ __pycache__/
 
 .DS_Store
 
-media/
 database.sqlite3
+
 test/
+data/original_images/*
+data/processed_images/*

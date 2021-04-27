@@ -10,6 +10,7 @@ from flask import (
     url_for,
 )
 from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy.exc
 
 import os
 import uuid
@@ -47,7 +48,7 @@ def map_image_item(item):
     return {
         'id': item.id,
         'username': item.username,
-        'image_url': f'/media/{item.image_filename}',
+        'image_url': url_for('serve_processed_media', path=item.image_filename),
         'timestamp': str(item.timestamp),
     }
 
@@ -102,9 +103,12 @@ def api_upload():
     success = True # process(input_image.stream, filename)
 
     if success:
-        image_item = ImageItem(username=username, image_filename=filename)
-        db.session.add(image_item)
-        db.session.commit()
+        try:
+            image_item = ImageItem(username=username, image_filename=filename)
+            db.session.add(image_item)
+            db.session.commit()
+        except sqlalchemy.exc.SQLAlchemyError:
+            return error_resp('Database error, please try again later')
 
         return success_resp({
             'image_url': url_for('serve_processed_media', path=filename),
@@ -114,7 +118,11 @@ def api_upload():
 
 @app.route("/api/list_images")
 def api_list_images():
-    items = ImageItem.query.order_by(ImageItem.timestamp.desc()).limit(20).all()
+    try:
+        items = ImageItem.query.order_by(ImageItem.timestamp.desc()).limit(20).all()
+    except sqlalchemy.exc.SQLAlchemyError:
+        return error_resp('Database error, please try again later')
+
     return success_resp({
         'data': list(map(map_image_item, items)),
     })

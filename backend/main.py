@@ -17,17 +17,36 @@ def process(image, filter_image, position):
         d.rectangle(face_location, outline=(0, 0, 0))
         width = face_location[1] - face_location[3]
         height = face_location[2] - face_location[0]
-        ratio = width / filter_image.size[0] * 1.5
-        filter_image = filter_image.resize(
-            ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
-        filter_pos = (face_location[0] - (int)((filter_image.size[0] - width) / 2),
-                      face_location[3] - filter_image.size[1])
-        print(filter_pos)
-        process_image.paste(filter_image, filter_pos,
-                            mask=filter_image.split()[3])
+        #print(face_location)
 
+        if position == None:
+            ratio = width / filter_image.size[0] * 1.5
+            filter_image = filter_image.resize(
+                ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+            filter_pos = (face_location[0] - (int)((filter_image.size[0] - width) / 2),
+                        face_location[3] - filter_image.size[1])
+            print(filter_pos)
+            process_image.paste(filter_image, filter_pos,
+                                mask=filter_image.split()[3])
+
+        elif position == "eyes":
+            ratio = width / filter_image.size[0] * 1.0
+            left_eye = face_landmarks['left_eye']
+            right_eye = face_landmarks['right_eye']
+            print(left_eye)
+            filter_image = filter_image.resize(
+                ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+            
+            filter_pos = ((int)(left_eye[0][0] - filter_image.size[1]/2) ,(int)(left_eye[0][1] - filter_image.size[1]/2))
+            print(filter_pos)
+            process_image.paste(filter_image, filter_pos,
+                                mask=filter_image.split()[3])
     return process_image
 
 
-process("./demo_image.png", "./demo_filter.png", None).show()
-process("./demo_image_2.jpg", "./demo_filter.png", None).show()
+#process("backend/demo_image.png", "backend/demo_filter.png", None).show()
+#process("backend/demo_image_2.jpg", "backend/demo_filter.png", None).show()
+
+#process("backend/demo_image.png","backend/sunglasses.png","eyes").show()
+process("backend/demo_image_2.jpg","backend/sunglasses.png","eyes").show()
+process("backend/demo_image_2.jpg","backend/thug-life-sunglasses.png","eyes").show()

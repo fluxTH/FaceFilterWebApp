@@ -10,11 +10,13 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 
-import os.path 
+import os
 import uuid
 import time
 from datetime import datetime 
+
 import config
+from backend.api import API
 
 
 ### FLASK INITIALIZATION
@@ -86,19 +88,22 @@ def api_upload():
         return error_resp('Invalid filename')
 
     extension = input_image.filename.split('.')[-1]
+    if extension not in config.ALLOWED_EXTENSIONS:
+        return error_resp('Extension not allowed')
+
     filename = '{}.{}.{}'.format(
         str(uuid.uuid4()),
         int(time.time()),
         extension,
     )
     
-    input_image.save(os.path.join(config.MEDIA_PATH, filename))
+    input_image.save(os.path.join(config.PROCESSED_MEDIA_PATH, filename))
     success = True # process(input_image.stream, filename)
 
     if success:
         return success_resp({
             'image_url': '/{}/{}'.format(
-                config.MEDIA_PATH,
+                config.PROCESSED_MEDIA_PATH,
                 filename,
             ),
         })
@@ -114,7 +119,7 @@ def api_list_images():
 
 @app.route("/media/<path:path>")
 def serve_media(path):
-    return send_from_directory(config.MEDIA_PATH, path)
+    return send_from_directory(config.PROCESSED_MEDIA_PATH, path)
 
 if __name__ == "__main__":
     # run debug server

@@ -8,6 +8,5 @@ __pycache__/
 
 database.sqlite3
 
-test/
 data/original_images/*
 data/processed_images/*

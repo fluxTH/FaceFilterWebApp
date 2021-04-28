@@ -100,8 +100,6 @@ def api_upload():
             ', '.join(config.ALLOWED_EXTENSIONS)
         ))
 
-    if input_image.filename
-
     filename = '{}.{}.{}'.format(
         str(uuid.uuid4()),
         hex(int(time.time() * 1000) ^ 0x69deadbeef)[2:],

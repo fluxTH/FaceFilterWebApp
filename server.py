@@ -69,9 +69,9 @@ def error_resp(msg):
 
 @app.route("/")
 def root():
-    return render_template('index.html', {
-        'app_name': config.APP_NAME,
-    })
+    return render_template('index.html', 
+        app_name = config.APP_NAME,
+    )
 
 @app.route("/api/upload", methods=['POST'])
 def api_upload():

@@ -33,28 +33,29 @@ class API:
 
             if filter_part == "hat":
                 ratio = width / filter_image.size[0] * 1.4
-                filter_image = filter_image.resize(
-                    ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
-                filter_pos = (face_location[3] - (int)(
-                    (filter_image.size[0] - width) / 2), face_location[0] - filter_image.size[0])
-                print(filter_pos)
-                process_image.paste(filter_image, filter_pos,
-                                    mask=filter_image.split()[3])
+            filter_image = filter_image.resize(((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+            filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - filter_image.size[1])
+            print(filter_pos)
+            process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
 
         for face_landmarks in face_landmarks_list:
             if filter_part == "glass":
                 ratio = width / filter_image.size[0] * 1.0
                 left_eye = face_landmarks['left_eye']
-                right_eye = face_landmarks['right_eye']
                 print(left_eye)
-                filter_image = filter_image.resize(
-                    ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+                filter_image = filter_image.resize(((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+                filter_pos = ((int)(left_eye[0][0] - filter_image.size[1]/2),(int)(left_eye[0][1] - filter_image.size[1]/2))
 
-                filter_pos = ((int)(left_eye[0][0] - filter_image.size[1]/2),
-                              (int)(left_eye[0][1] - filter_image.size[1]/2))
                 print(filter_pos)
                 process_image.paste(filter_image, filter_pos,
                                     mask=filter_image.split()[3])
+            elif position == "float":
+                ratio = width / filter_image.size[0] * 3.0
+                filter_image = filter_image.resize(((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+                filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - filter_image.size[1])
+                print(filter_pos)
+                process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
+
         process_image.save(os.path.join(config.PROCESSED_MEDIA_PATH, filename))
         return True
 

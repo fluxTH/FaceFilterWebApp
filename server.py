@@ -4,7 +4,6 @@ from flask import (
     Flask, 
     render_template, 
     request, 
-    abort, 
     jsonify,
     send_from_directory,
     url_for,
@@ -29,6 +28,7 @@ app = Flask(
     static_folder=config.STATIC_PATH,
 )
 
+app.config['MAX_CONTENT_LENGTH'] = config.MAX_UPLOAD_SIZE
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 db = SQLAlchemy(app)
 
@@ -69,7 +69,9 @@ def error_resp(msg):
 
 @app.route("/")
 def root():
-    return render_template('index.html')
+    return render_template('index.html', {
+        'app_name': config.APP_NAME,
+    })
 
 @app.route("/api/upload", methods=['POST'])
 def api_upload():
@@ -77,30 +79,44 @@ def api_upload():
         return error_resp('Input image not present')
 
     username = request.form.get('username', None)
-    filter = request.form.get('filter', None)
+    filter_name = request.form.get('filter', None)
 
-    if username is None or filter is None:
+    if username is None or filter_name is None:
         return error_resp('Please fill all the required fields')
 
-    input_image = request.files['image']
+    if len(username) < 3 or len(username) > 255:
+        return error_resp('Name must be between 3 and 255 characters')
 
-    if not '.' in input_image.filename:
+    if filter_name not in config.ALLOWED_FILTER_NAMES:
+        return error_resp('Invalid filter')
+
+    input_image = request.files['image']
+    if '.' not in input_image.filename:
         return error_resp('Invalid filename')
 
-    extension = input_image.filename.split('.')[-1]
+    extension = input_image.filename.rsplit('.', 1)[1].lower()
     if extension not in config.ALLOWED_EXTENSIONS:
         return error_resp('Extension not allowed, only "{}" are allowed'.format(
             ', '.join(config.ALLOWED_EXTENSIONS)
         ))
 
+    if input_image.filename
+
     filename = '{}.{}.{}'.format(
         str(uuid.uuid4()),
-        int(time.time()),
+        hex(int(time.time() * 1000) ^ 0x69deadbeef)[2:],
         extension,
     )
     
-    input_image.save(os.path.join(config.ORIGINAL_MEDIA_PATH, filename))
-    success = API.process(filename)
+    original_path = os.path.join(config.ORIGINAL_MEDIA_PATH, filename)
+    input_image.save(original_path)
+    
+    try:
+        # TODO: add return number of faces detected
+        # (success, faces_detected) = API.process(filename)
+        success = API.process(filename)
+    except Exception as e:
+        success = False
 
     if success:
         try:
@@ -113,7 +129,9 @@ def api_upload():
         return success_resp({
             'image_url': url_for('serve_processed_media', path=filename),
         })
-
+        
+    # Delete original image and return error message
+    os.remove(original_path)
     return error_resp('Image processing failed, please try again later')
 
 @app.route("/api/list_images")

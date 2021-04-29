@@ -40,6 +40,9 @@ class ImageItem(db.Model):
     username = db.Column(db.String(255), nullable=False)
     image_filename = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    filter_used = db.Column(db.String(255), nullable=False)
+    face_count = db.Column(db.Integer, nullable=False)
+    visible = db.Column(db.Boolean, nullable=False, default=True)
 
 
 ### HELPER FUNCTIONS
@@ -49,7 +52,9 @@ def map_image_item(item):
         'id': item.id,
         'username': item.username,
         'image_url': url_for('serve_processed_media', path=item.image_filename),
-        'timestamp': str(item.timestamp),
+        'filter_used': item.filter_used,
+        'face_count': item.face_count,
+        'timestamp': int(item.timestamp.timestamp()), # in UTC timezone
     }
 
 def success_resp(data):
@@ -80,6 +85,7 @@ def api_upload():
 
     username = request.form.get('username', None)
     filter_name = request.form.get('filter', None)
+    visible = not (request.form.get('private', None) == 'on')
 
     if username is None or filter_name is None:
         return error_resp('Please fill all the required fields')
@@ -108,17 +114,28 @@ def api_upload():
     
     original_path = os.path.join(config.ORIGINAL_MEDIA_PATH, filename)
     input_image.save(original_path)
-    
-    try:
-        # TODO: add return number of faces detected
-        # (success, faces_detected) = API.process(filename)
-        success = API.process(filename)
-    except Exception as e:
-        success = False
+   
+    success = False
+    faces_detected = 0
 
-    if success:
+    try:
+        # TODO: return number of faces detected and accept filter name
+        # (success, faces_detected) = API.process(filename, filter_name)
+        success = API.process(filename)
+        faces_detected = 1 # Remove when API is implemented
+    except Exception:
+        pass
+
+    if success and faces_detected > 0:
         try:
-            image_item = ImageItem(username=username, image_filename=filename)
+            image_item = ImageItem(
+                username = username,
+                image_filename = filename,
+                filter_used = filter_name,
+                face_count = faces_detected,
+                visible = visible,
+            )
+
             db.session.add(image_item)
             db.session.commit()
         except sqlalchemy.exc.SQLAlchemyError:
@@ -127,19 +144,30 @@ def api_upload():
         return success_resp({
             'image_url': url_for('serve_processed_media', path=filename),
         })
-        
+      
     # Delete original image and return error message
     os.remove(original_path)
-    return error_resp('Image processing failed, please try again later')
+
+    if not success:
+        return error_resp('Image processing failed, please try again later')
+
+    # Face count is 0
+    return error_resp('Unable to detect faces in supplied image')
 
 @app.route("/api/list_images")
 def api_list_images():
     try:
-        items = ImageItem.query.order_by(ImageItem.timestamp.desc()).limit(20).all()
+        items = ImageItem.query\
+                    .filter_by(visible=True)\
+                    .order_by(ImageItem.timestamp.desc())\
+                    .limit(20)\
+                    .all()
+
     except sqlalchemy.exc.SQLAlchemyError:
         return error_resp('Database error, please try again later')
 
     return success_resp({
+        'count': len(items),
         'data': list(map(map_image_item, items)),
     })
 

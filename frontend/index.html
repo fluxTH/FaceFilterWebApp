@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-  <meta name="author" content="">
+    <meta name="author" content="">
 
     <title>{{ app_name }}</title>
 
@@ -15,115 +16,116 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
     <!-- Custom styles for this template -->
     <link href="/static/app.css" rel="stylesheet">
-  </head>
+</head>
 
-  <body>
+<body>
     <header>
-      <div class="collapse bg-dark" id="navbarHeader">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-8 col-md-7 py-4">
-              <h4 class="text-white">About</h4>
-              <p class="text-muted">This is a final project of 2110221 - Computer Engineering Essential</p>
-              <p class="text-muted">Upload your photo and our algorithm will add some impressive filter to you pics ^^.</p>
+        <div class="collapse bg-dark" id="navbarHeader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                        <h4 class="text-white">About</h4>
+                        <p class="text-muted">This is a final project of 2110221 - Computer Engineering Essential</p>
+                        <p class="text-muted">Upload your photo and our algorithm will add some impressive filter to you pics ^^.</p>
+                    </div>
+                    <div class="col-sm-4 offset-md-1 py-4">
+                        <h4 class="text-white">Refs</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="https://medium.com/@P.Srirak/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%A5%E0%B9%88%E0%B8%99-face-recognition-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-python-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-c62125252736#"
+                                    class="text-white">Face Recognition</a></li>
+                            <li><a href="https://getbootstrap.com/" class="text-white">FrontEnd FrameWork</a></li>
+                            <li><a href="https://flask.palletsprojects.com/en/1.1.x/" class="text-white">BackEnd Project</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-4 offset-md-1 py-4">
-              <h4 class="text-white">Refs</h4>
-              <ul class="list-unstyled">
-                <li><a href="https://medium.com/@P.Srirak/%E0%B8%A1%E0%B8%B2%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%A5%E0%B9%88%E0%B8%99-face-recognition-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-python-%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%96%E0%B8%AD%E0%B8%B0-c62125252736#" class="text-white">Face Recognition</a></li>
-                <li><a href="https://getbootstrap.com/" class="text-white">FrontEnd FrameWork</a></li>
-                <li><a href="https://flask.palletsprojects.com/en/1.1.x/" class="text-white">BackEnd Project</a></li>
-              </ul>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="navbar navbar-dark bg-dark box-shadow">
-        <div class="container d-flex justify-content-between">
-          <a href="#" class="navbar-brand d-flex align-items-center">
-            <strong><i class="far fa-smile-wink"></i> {{ app_name }}</strong>
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="navbar navbar-dark bg-dark box-shadow">
+            <div class="container d-flex justify-content-between">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <strong><i class="far fa-smile-wink"></i> {{ app_name }}</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
+            </div>
         </div>
-      </div>
     </header>
 
     <main role="main">
 
-      <section class="jumbotron text-center">
-        <div class="container">
-          <noscript>
+        <section class="jumbotron text-center">
+            <div class="container">
+                <noscript>
             <div class="alert alert-danger" role="alert">
               JavaScript must be enabled to use this site!
             </div>
           </noscript>
-          <h1 class="jumbotron-heading">Upload Photo</h1>
-          <p class="lead text-muted">Apply a filter to your face here!</p>
-          <form class="upload-form" action="{{ url_for('api_upload') }}" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-              <div class="custom-file image-upload">
-                <input type="file" class="custom-file-input" id="image-file-input" name="image" required>
-                <label class="custom-file-label text-muted" id="image-path-label" for="image-file-input">Choose file</label>
-              </div>
-            </div>
-            <div class="form-group">
-              <h1 id="upload-spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></h1>
-              <img id="upload-preview" src="" style="display: none;" class="img-thumbnail">
-            </div>
-            <div class="form-group">
-              <div class="form-row">
-                <div class="col-sm-12 col-md-6" style="margin-bottom: 5px;">
-                  <input class="form-control form-control-sm" name="username" placeholder="Enter your name">
-                </div>
-                <div class="col-sm-12 col-md-6">
-                  <select class="custom-select custom-select-sm" name="filter">
+                <h1 class="jumbotron-heading">Upload Photo</h1>
+                <p class="lead text-muted">Apply a filter to your face here!</p>
+                <form class="upload-form" action="{{ url_for('api_upload') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <div class="custom-file image-upload">
+                            <input type="file" class="custom-file-input" id="image-file-input" name="image" required>
+                            <label class="custom-file-label text-muted" id="image-path-label" for="image-file-input">Choose file</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h1 id="upload-spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i></h1>
+                        <img id="upload-preview" src="" style="display: none;" class="img-thumbnail">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-sm-12 col-md-6" style="margin-bottom: 5px;">
+                                <input class="form-control form-control-sm" name="username" placeholder="Enter your name">
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <select class="custom-select custom-select-sm" name="filter">
                     <option value="random" selected>Random Filter</option>
                     {% for filename, name in filter_list %}
                     <option value="{{ filename }}">{{ name }}</option>
                     {% endfor %}
                   </select>
-                </div>
-              </div>
-            </div>
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="private-checkbox" name="private">
-              <label class="form-check-label" for="private-checkbox">Make photo private</label>
-            </div>
-            <div class="form-group" style="margin-top: 1rem;">
-              <button type="submit" class="btn btn-primary btn-lg my-2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="private-checkbox" name="private">
+                        <label class="form-check-label" for="private-checkbox">Make photo private</label>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <button type="submit" class="btn btn-primary btn-lg my-2">
                 <i class="fas fa-cloud-upload-alt"></i> Upload!
               </button>
-              <button type="reset" id="upload-reset-button" class="btn btn-secondary btn-lg my-2">
+                        <button type="reset" id="upload-reset-button" class="btn btn-secondary btn-lg my-2">
                 <i class="fas fa-times"></i> Clear
               </button>
-              <p class="text-muted">Max filesize: 12MB</p>
+                        <p class="text-muted">Max filesize: 12MB</p>
+                    </div>
+                </form>
             </div>
-          </form>
-        </div>
-      </section>
+        </section>
 
-      <div class="album py-5 bg-light">
-        <div class="container">
-          <h2 class="text-center image-list-header">
-            <i class="fas fa-images"></i> Latest Images
-          </h2>
-          <h1 class="text-center" id="image-list-spinner"><i class="fas fa-spinner fa-spin"></i></h1>
-          <div class="row" id="image-list"></div>
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center image-list-header">
+                    <i class="fas fa-images"></i> Latest Images
+                </h2>
+                <h1 class="text-center" id="image-list-spinner"><i class="fas fa-spinner fa-spin"></i></h1>
+                <div class="row" id="image-list"></div>
+            </div>
         </div>
-      </div>
 
     </main>
 
     <footer class="text-muted">
-      <div class="container">
-        <p class="float-right">
-          <a href="#">Back to top</a>
-        </p>
-        <p>Full-stack: P'Fluke<br>Front-end: K.Jetnipit&Pavable<br>Back-end&Database: PongDev&Tun
-        </p>
-      </div>
+        <div class="container">
+            <p class="float-right">
+                <a href="#">Back to top</a>
+            </p>
+            <p>Full-stack: P'Fluke<br>Front-end: K.Jetnipit&Pawable<br>Back-end&Database: PongDev&Tun
+            </p>
+        </div>
     </footer>
 
     <!-- Bootstrap core JavaScript
@@ -134,5 +136,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js"></script>
     <script src="/static/app.js"></script>
-  </body>
+</body>
+
 </html>

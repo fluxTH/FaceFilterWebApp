@@ -121,7 +121,7 @@ def api_upload():
     try:
         # TODO: return number of faces detected and accept filter name
         # (success, faces_detected) = API.process(filename, filter_name)
-        success = API.process(filename)
+        success = API.process(filename, filter_name)
         faces_detected = 1 # Remove when API is implemented
     except Exception:
         pass

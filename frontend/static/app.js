@@ -62,13 +62,13 @@ function refreshImageList(showSpinner) {
     d1.getUTCSeconds()
   );
 
-  let errorHead = 'Imagelist failed to load: '; 
   let errorTail = '. Please try again later.';
 
   $.ajax({
     url: '/api/list_images',
     success: function(data) {
       if (data.status == 'success') {
+        clearILError();
         let html = '';
 
         if (data.count > 0) {
@@ -99,14 +99,15 @@ function refreshImageList(showSpinner) {
       }
 
       if (data.status == 'error') {
-        alert(errorHead + data.message + errorTail);
+        showILError(data.message);
         return;
       }
 
-      alert(errorHead + 'Unknown Error' + errorTail);
+      showILError('Unknown Error');
     },
     error: function(o, e, es) {
-      alert(errorHead + es + errorTail);
+      console.log(o);
+      showILError(e + ' ' + es);
     }
   });
 }
@@ -120,6 +121,14 @@ function clearError() {
   $('#upload-error-alert').hide();
 }
 
+function showILError(msg) {
+  $('#imagelist-error-alert').find('span.error-message').text(msg);
+  $('#imagelist-error-alert').show();
+}
+
+function clearILError() {
+  $('#imagelist-error-alert').hide();
+}
 function showUploadStatus() {
   $('.upload-form-button').attr('disabled', 'disabled');
   $('#upload-submit-button').html('<i class="fa fa-spinner fa-spin"></i> Uploading...');

@@ -56,7 +56,7 @@
 
         <section class="jumbotron text-center">
             <div class="container">
-                <noscript>
+          <noscript>
             <div class="alert alert-danger" role="alert">
               JavaScript must be enabled to use this site!
             </div>
@@ -123,6 +123,10 @@
                 <h2 class="text-center image-list-header">
                     <i class="fas fa-images"></i> Latest Images
                 </h2>
+                <div class="alert alert-danger text-left" id="imagelist-error-alert" style="display: none;" role="alert">
+                  <b><i class="fas fa-exclamation-circle"></i> Load Error: </b> 
+                  <span class="error-message"></span>
+                </div>
                 <h1 class="text-center" id="image-list-spinner"><i class="fas fa-spinner fa-spin"></i></h1>
                 <div class="row" id="image-list"></div>
             </div>

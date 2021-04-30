@@ -70,22 +70,27 @@ function refreshImageList(showSpinner) {
     success: function(data) {
       if (data.status == 'success') {
         let html = '';
-        for (i = 0; i < data.count; ++i) {
-          let item = data.data[i];
-          let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
-          html += `
-          <div class="col-md-4">
-            <div class="card mb-4 box-shadow">
-              <img class="card-img-top" src="${item.image_url}">
-              <div class="card-body">
-                <p class="card-text">Uploaded by <b>${item.username}</b></p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="badge badge-primary">${item.filter_used}</span>
-                  <small class="text-muted">${timeDiff} ago</small>
+
+        if (data.count > 0) {
+          for (i = 0; i < data.count; ++i) {
+            let item = data.data[i];
+            let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
+            html += `
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="${item.image_url}">
+                <div class="card-body">
+                  <p class="card-text">Uploaded by <b>${item.username}</b></p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge badge-primary">${item.filter_used}</span>
+                    <small class="text-muted">${timeDiff} ago</small>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>`;
+            </div>`;
+          }
+        } else {
+          html += '<p class="text-muted">No uploaded images.</p>';
         }
 
         $('#image-list').html(html);
@@ -206,7 +211,7 @@ $(document).ready(() => {
 
   refreshImageList();
 
-  setTimeout(function() {
+  setInterval(function() {
     refreshImageList(false);
   }, 10000);
 });

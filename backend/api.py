@@ -8,8 +8,12 @@ import random
 class API:
 
     @staticmethod
+    def getFilterTitle(filename):
+        return filename[filename.find('_')+1:filename.rfind('.')].title()
+
+    @staticmethod
     def getFilterTupleList():
-        return [(e, e[e.find('_')+1:e.rfind('.')]) for e in API.getFilterList()]
+        return [(e, API.getFilterTitle(e)) for e in API.getFilterList()]
 
     @staticmethod
     def getFilterList():

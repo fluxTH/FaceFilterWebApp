@@ -29,7 +29,7 @@ function timeDifference(current, previous) {
     }
 
     else {
-        return Math.round(elapsed/msPerYear ) + 'yr';   
+        return Math.round(elapsed/msPerYear ) + 'y';   
     }
 }
 
@@ -165,6 +165,7 @@ $(document).ready(() => {
   });
 
   $('.upload-form').submit(function() {
+    clearError();
     showUploadStatus();
 
     let usernameInput = $('input[name=username]');

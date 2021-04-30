@@ -138,7 +138,7 @@ def api_upload():
             image_item = ImageItem(
                 username=username,
                 image_filename=filename,
-                filter_used=filter_filename,
+                filter_used=API.getFilterTitle(filter_filename) if filter_filename != 'random' else 'Random',
                 face_count=faces_detected,
                 visible=visible,
             )

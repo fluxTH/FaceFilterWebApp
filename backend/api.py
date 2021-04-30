@@ -20,9 +20,9 @@ class API:
         filter_image_list = API.getFilterList()
 
         if (filter_name not in filter_image_list):
-            random_filter_image = filter_image_list[random.randint(
+            filter_name = filter_image_list[random.randint(
                 0, len(filter_image_list) - 1)]
-            filter_part = random_filter_image.split("_")[0]
+            filter_part = filter_name.split("_")[0]
         else:
             filter_part = filter_name.split("_")[0]
 
@@ -32,7 +32,7 @@ class API:
             face_location_list = face_recognition.face_locations(image)
             face_landmarks_list = face_recognition.face_landmarks(image)
             filter_image = Image.open(os.path.join(
-                config.FILTER_PATH, random_filter_image)).convert("RGBA")
+                config.FILTER_PATH, filter_name)).convert("RGBA")
             process_image = Image.fromarray(image)
 
             for face_location in face_location_list:
@@ -89,6 +89,19 @@ class API:
                     print(filter_pos)
                     process_image.paste(filter_image, filter_pos,
                                         mask=filter_image.split()[3])
+                elif filter_part == "chin":
+                    ratio = width/filter_image.size[0] * 1
+                    chin = face_landmarks['chin']
+                    # d.polygon(chin, outline=(0, 0, 0))
+                    filter_image = filter_image.resize(
+                        ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+
+                    d.polygon(chin, outline=(0, 0, 0))
+                    filter_pos = ((int)((sum([e[0] for e in chin]) / len(chin)) - (filter_image.size[0] / 2)),
+                                  (int)((sum([e[1] for e in chin]) / len(chin)) - (filter_image.size[1] / 4)))
+                    process_image.paste(
+                        filter_image, filter_pos, mask=filter_image.split()[3])
+                print(face_landmarks)
 
             process_image.save(os.path.join(
                 config.PROCESSED_MEDIA_PATH, filename))

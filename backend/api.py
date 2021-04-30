@@ -25,8 +25,7 @@ class API:
         for face_location in face_location_list:
             # top right bottom left
             d = ImageDraw.Draw(process_image, "RGB")
-            d.rectangle((face_location[3], face_location[0],
-                         face_location[1], face_location[2]), outline=(0, 0, 0))
+            d.rectangle((face_location[3], face_location[0],face_location[1], face_location[2]), outline=(0, 0, 0))
             width = face_location[1] - face_location[3]
             height = face_location[2] - face_location[0]
             print(face_location)
@@ -56,7 +55,15 @@ class API:
                 print(filter_pos)
                 process_image.paste(filter_image, filter_pos,
                                     mask=filter_image.split()[3])
-            
+            elif filter_part == "nose":
+                ratio = width / filter_image.size[0] * 1.2
+                nose_tip = face_landmarks['nose_tip']
+                print(nose_tip)
+                filter_image = filter_image.resize(((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+                filter_pos = ((int)(nose_tip[0][0] - 1.15*filter_image.size[1]) ,(int)(nose_tip[0][1] - filter_image.size[1]/2))
+                
+                print(filter_pos)
+                process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
             
 
         process_image.save(os.path.join(config.PROCESSED_MEDIA_PATH, filename))

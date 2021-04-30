@@ -9,11 +9,9 @@ def process(image, filter_image, position):
     filter_image = Image.open(filter_image).convert("RGBA")
 
     process_image = Image.fromarray(image)
-    for face_landmarks in face_landmarks_list:
-        #print(face_landmarks.keys())
-        pass
-    #dict_keys(['chin', 'left_eyebrow', 'right_eyebrow', 'nose_bridge', 'nose_tip', 'left_eye', 'right_eye', 'top_lip', 'bottom_lip'])
     
+
+
     for face_location in face_location_list:
         # top right bottom left
         d = ImageDraw.Draw(process_image, "RGB")
@@ -30,7 +28,16 @@ def process(image, filter_image, position):
             print(filter_pos)
             process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
 
-        elif position == "eyes":
+        elif position == "float":
+            ratio = width / filter_image.size[0] * 1.5
+            filter_image = filter_image.resize(
+                ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
+            filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - int(1.2*filter_image.size[1]))
+            print(filter_pos)
+            process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
+
+    for face_landmarks in face_landmarks_list:
+        if position == "eyes":
             ratio = width / filter_image.size[0] * 1.0
             left_eye = face_landmarks['left_eye']
             print(left_eye)
@@ -41,14 +48,16 @@ def process(image, filter_image, position):
             print(filter_pos)
             process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
 
-        elif position == "float":
-            ratio = width / filter_image.size[0] * 3.0
+        elif position == "nose":
+            ratio = width / filter_image.size[0] * 1.2
+            nose_tip = face_landmarks['nose_tip']
+            print(nose_tip)
             filter_image = filter_image.resize(
                 ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
-            filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - filter_image.size[1])
+            
+            filter_pos = ((int)(nose_tip[0][0] - 1.15*filter_image.size[1]) ,(int)(nose_tip[0][1] - filter_image.size[1]/2))
             print(filter_pos)
             process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
-
     return process_image
 
 
@@ -56,5 +65,6 @@ def process(image, filter_image, position):
 #process("backend/demo/demo_image_4.jpg", "data/filter/hat_cook.png", "head").show()
 #process("backend/demo/demo_image_3.jpg", "data/filter/glass_sunglasses.png","eyes").show()
 
-#process("backend/demo/demo_image_3.jpg", "data/filter/hat_bunny-ears.png","head").show()
-process("backend/demo/demo_image_3.jpg", "data/filter/float_heart.png","float").show()
+process("backend/demo/demo_image_7.jpg", "data/filter/float_heart.png","float").show()
+process("backend/demo/demo_image_3.jpg", "data/filter/float_angel.png","float").show()
+process("backend/demo/demo_image_8.jpg", "data/filter/nose_cat.png","nose").show()

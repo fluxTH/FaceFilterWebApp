@@ -10,6 +10,7 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy.exc
+from werkzeug.utils import secure_filename
 
 import os
 import uuid
@@ -76,6 +77,7 @@ def error_resp(msg):
 def root():
     return render_template('index.html', 
         app_name = config.APP_NAME,
+        filter_list = API.getFilterTupleList(),
     )
 
 @app.route("/api/upload", methods=['POST'])
@@ -84,16 +86,17 @@ def api_upload():
         return error_resp('Input image not present')
 
     username = request.form.get('username', None)
-    filter_name = request.form.get('filter', None)
+    filter_filename = request.form.get('filter', None)
     visible = not (request.form.get('private', None) == 'on')
 
-    if username is None or filter_name is None:
+    if username is None or filter_filename is None:
         return error_resp('Please fill all the required fields')
 
     if len(username) < 3 or len(username) > 255:
         return error_resp('Name must be between 3 and 255 characters')
 
-    if filter_name not in config.ALLOWED_FILTER_NAMES:
+    allowed_filter_filenames = API.getFilterList() + ['random']
+    if filter_filename not in allowed_filter_filenames:
         return error_resp('Invalid filter')
 
     input_image = request.files['image']
@@ -119,10 +122,10 @@ def api_upload():
     faces_detected = 0
 
     try:
-        # TODO: return number of faces detected and accept filter name
-        # (success, faces_detected) = API.process(filename, filter_name)
-        success = API.process(filename, filter_name)
-        faces_detected = 1 # Remove when API is implemented
+        (success, faces_detected) = API.process(
+            filename, 
+            secure_filename(filter_filename) if filter_filename != 'random' else '',
+        )
     except Exception:
         pass
 
@@ -131,7 +134,7 @@ def api_upload():
             image_item = ImageItem(
                 username = username,
                 image_filename = filename,
-                filter_used = filter_name,
+                filter_used = filter_filename,
                 face_count = faces_detected,
                 visible = visible,
             )
@@ -143,6 +146,7 @@ def api_upload():
 
         return success_resp({
             'image_url': url_for('serve_processed_media', path=filename),
+            'face_count': faces_detected,
         })
       
     # Delete original image and return error message

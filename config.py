@@ -12,6 +12,5 @@ ORIGINAL_MEDIA_PATH =   join(PROJECT_PATH, 'data/original_images')
 PROCESSED_MEDIA_PATH =  join(PROJECT_PATH, 'data/processed_images')
 FILTER_PATH =           join(PROJECT_PATH, 'data/filter')
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-ALLOWED_FILTER_NAMES = ('random', )
+ALLOWED_EXTENSIONS = ('png', 'jpg', 'jpeg')
 MAX_UPLOAD_SIZE = 1024 * 1024 * 12  # 12 MiB

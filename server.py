@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from flask import (
-    Flask, 
-    render_template, 
-    request, 
+    Flask,
+    render_template,
+    request,
     jsonify,
     send_from_directory,
     url_for,
@@ -15,16 +15,16 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 import time
-from datetime import datetime 
+from datetime import datetime
 
 import config
 from backend.api import API
 
 
-### FLASK INITIALIZATION
+# FLASK INITIALIZATION
 
 app = Flask(
-    config.APP_NAME, 
+    config.APP_NAME,
     template_folder=config.TEMPLATE_PATH,
     static_folder=config.STATIC_PATH,
 )
@@ -34,7 +34,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 db = SQLAlchemy(app)
 
 
-### MODELS
+# MODELS
 
 class ImageItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,7 +46,7 @@ class ImageItem(db.Model):
     visible = db.Column(db.Boolean, nullable=False, default=True)
 
 
-### HELPER FUNCTIONS
+# HELPER FUNCTIONS
 
 def map_image_item(item):
     return {
@@ -55,8 +55,9 @@ def map_image_item(item):
         'image_url': url_for('serve_processed_media', path=item.image_filename),
         'filter_used': item.filter_used,
         'face_count': item.face_count,
-        'timestamp': int(item.timestamp.timestamp()), # in UTC timezone
+        'timestamp': int(item.timestamp.timestamp()),  # in UTC timezone
     }
+
 
 def success_resp(data):
     return jsonify({
@@ -64,21 +65,23 @@ def success_resp(data):
         **data,
     })
 
+
 def error_resp(msg):
     return jsonify({
-        'status': 'error', 
+        'status': 'error',
         'message': msg,
     })
 
 
-### ROUTES
+# ROUTES
 
 @app.route("/")
 def root():
-    return render_template('index.html', 
-        app_name = config.APP_NAME,
-        filter_list = API.getFilterTupleList(),
-    )
+    return render_template('index.html',
+                           app_name=config.APP_NAME,
+                           filter_list=API.getFilterTupleList(),
+                           )
+
 
 @app.route("/api/upload", methods=['POST'])
 def api_upload():
@@ -114,17 +117,18 @@ def api_upload():
         hex(int(time.time() * 1000) ^ 0x69deadbeef)[2:],
         extension,
     )
-    
+
     original_path = os.path.join(config.ORIGINAL_MEDIA_PATH, filename)
     input_image.save(original_path)
-   
+
     success = False
     faces_detected = 0
 
     try:
         (success, faces_detected) = API.process(
-            filename, 
-            secure_filename(filter_filename) if filter_filename != 'random' else '',
+            filename,
+            # Bug With Spacebar # secure_filename(filter_filename) if filter_filename != 'random' else '',
+            filter_filename if filter_filename != 'random' else '',
         )
     except Exception:
         pass
@@ -132,11 +136,11 @@ def api_upload():
     if success and faces_detected > 0:
         try:
             image_item = ImageItem(
-                username = username,
-                image_filename = filename,
-                filter_used = filter_filename,
-                face_count = faces_detected,
-                visible = visible,
+                username=username,
+                image_filename=filename,
+                filter_used=filter_filename,
+                face_count=faces_detected,
+                visible=visible,
             )
 
             db.session.add(image_item)
@@ -148,7 +152,7 @@ def api_upload():
             'image_url': url_for('serve_processed_media', path=filename),
             'face_count': faces_detected,
         })
-      
+
     # Delete original image and return error message
     os.remove(original_path)
 
@@ -158,14 +162,15 @@ def api_upload():
     # Face count is 0
     return error_resp('Unable to detect faces in supplied image')
 
+
 @app.route("/api/list_images")
 def api_list_images():
     try:
         items = ImageItem.query\
-                    .filter_by(visible=True)\
-                    .order_by(ImageItem.timestamp.desc())\
-                    .limit(15)\
-                    .all()
+            .filter_by(visible=True)\
+            .order_by(ImageItem.timestamp.desc())\
+            .limit(15)\
+            .all()
 
     except sqlalchemy.exc.SQLAlchemyError:
         return error_resp('Database error, please try again later')
@@ -175,20 +180,23 @@ def api_list_images():
         'data': list(map(map_image_item, items)),
     })
 
+
 @app.route("/media/proc/<path:path>")
 def serve_processed_media(path):
     return send_from_directory(config.PROCESSED_MEDIA_PATH, path)
+
 
 @app.route("/media/orig/<path:path>")
 def serve_original_media(path):
     return send_from_directory(config.ORIGINAL_MEDIA_PATH, path)
 
 
-### DEBUG SERVER ENTRYPOINT
+# DEBUG SERVER ENTRYPOINT
 
 @app.route("/api/test")
 def test():
     return API.test()
+
 
 if __name__ == "__main__":
     # run debug server

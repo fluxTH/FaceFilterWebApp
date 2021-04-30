@@ -41,3 +41,11 @@ footer p {
 .upload-form {
   margin-top: 2rem;
 }
+
+.image-upload {
+  text-align: left;
+}
+
+.image-list-header {
+  margin-bottom: 2rem;
+}

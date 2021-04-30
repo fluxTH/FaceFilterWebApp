@@ -45,7 +45,7 @@ def process(image, filter_image, position):
             ratio = width / filter_image.size[0] * 3.0
             filter_image = filter_image.resize(
                 ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
-            filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - filter_image.size[1])
+            filter_pos = (face_location[3] -(int)((filter_image.size[0] - width) / 2),face_location[0] - int(1.2*filter_image.size[1]))
             print(filter_pos)
             process_image.paste(filter_image, filter_pos,mask=filter_image.split()[3])
 
@@ -56,5 +56,5 @@ def process(image, filter_image, position):
 #process("backend/demo/demo_image_4.jpg", "data/filter/hat_cook.png", "head").show()
 #process("backend/demo/demo_image_3.jpg", "data/filter/glass_sunglasses.png","eyes").show()
 
-#process("backend/demo/demo_image_3.jpg", "data/filter/hat_bunny-ears.png","head").show()
+process("backend/demo/demo_image_5.jpg", "data/filter/hat_bunny-ears.png","head").show()
 process("backend/demo/demo_image_3.jpg", "data/filter/float_heart.png","float").show()

@@ -65,6 +65,6 @@ def process(image, filter_image, position):
 #process("backend/demo/demo_image_4.jpg", "data/filter/hat_cook.png", "head").show()
 #process("backend/demo/demo_image_3.jpg", "data/filter/glass_sunglasses.png","eyes").show()
 
-process("backend/demo/demo_image_7.jpg", "data/filter/float_heart.png","float").show()
-process("backend/demo/demo_image_3.jpg", "data/filter/float_angel.png","float").show()
-process("backend/demo/demo_image_8.jpg", "data/filter/nose_cat.png","nose").show()
+#process("backend/demo/demo_image_7.jpg", "data/filter/float_heart.png","float").show()
+#process("backend/demo/demo_image_3.jpg", "data/filter/float_angel.png","float").show()
+process("backend/demo/demo_image_8.jpg", "data/filter/float_butterfly.png","float").show()

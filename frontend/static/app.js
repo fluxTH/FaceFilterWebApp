@@ -45,6 +45,7 @@ function readImageFile(input, cb) {
 function resetUploadInput() {
   $('#image-path-label').text('Choose file').addClass('text-muted');
   $('#upload-preview').hide();
+  clearError();
 }
 
 function refreshImageList() {
@@ -59,32 +60,67 @@ function refreshImageList() {
     d1.getUTCSeconds()
   );
 
+  let errorHead = 'Imagelist failed to load: '; 
+  let errorTail = '. Please try again later.';
+
   $.ajax({
     url: '/api/list_images',
     success: function(data) {
-      let html = '';
-      for (i = 0; i < data.count; ++i) {
-        let item = data.data[i];
-        let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
-        html += `
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow">
-            <img class="card-img-top" src="${item.image_url}">
-            <div class="card-body">
-              <p class="card-text">Uploaded by <b>${item.username}</b></p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="badge badge-primary">${item.filter_used}</span>
-                <small class="text-muted">${timeDiff} ago</small>
+      if (data.status == 'success') {
+        let html = '';
+        for (i = 0; i < data.count; ++i) {
+          let item = data.data[i];
+          let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
+          html += `
+          <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+              <img class="card-img-top" src="${item.image_url}">
+              <div class="card-body">
+                <p class="card-text">Uploaded by <b>${item.username}</b></p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge badge-primary">${item.filter_used}</span>
+                  <small class="text-muted">${timeDiff} ago</small>
+                </div>
               </div>
             </div>
-          </div>
-        </div>`;
+          </div>`;
+        }
+
+        $('#image-list').html(html);
+        $('#image-list-spinner').hide();
+        return;
       }
 
-      $('#image-list').html(html);
-      $('#image-list-spinner').hide();
+      if (data.status == 'error') {
+        alert(errorHead + data.message + errorTail);
+        return;
+      }
+
+      alert(errorHead + 'Unknown Error' + errorTail);
+    },
+    error: function(o, e, es) {
+      alert(errorHead + es + errorTail);
     }
   });
+}
+
+function showError(msg) {
+  $('#upload-error-alert').find('span.error-message').text(msg);
+  $('#upload-error-alert').show();
+}
+
+function clearError() {
+  $('#upload-error-alert').hide();
+}
+
+function showUploadStatus() {
+  $('.upload-form-button').attr('disabled', 'disabled');
+  $('#upload-submit-button').html('<i class="fa fa-spinner fa-spin"></i> Uploading...');
+}
+
+function resetUploadStatus() {
+  $('.upload-form-button').removeAttr('disabled');
+  $('#upload-submit-button').html('<i class="fas fa-cloud-upload-alt"></i> Upload!');
 }
 
 $(document).ready(() => {
@@ -97,6 +133,8 @@ $(document).ready(() => {
 
     let filename = filepath.split('\\').pop();
     $('#image-path-label').text(filename).removeClass('text-muted');
+
+    clearError();
 
     $('#upload-preview').hide();
     $('#upload-spinner').show();
@@ -111,11 +149,56 @@ $(document).ready(() => {
     resetUploadInput();
   });
 
-  $('.upload-form').submit(function() {
-    // validate
-    
+  $('#upload-return-button').click(function() {
+    $('#upload-reset-button').click();
+    $('.result-view').hide();
+    $('.upload-form').show();
+    return false;
+  });
 
-    //return false;
+  $('.upload-form').submit(function() {
+    showUploadStatus();
+
+    let usernameInput = $('input[name=username]');
+    if (usernameInput.val().length == 0) {
+      $(usernameInput).val('Anonymous');
+    }
+
+    let formData = new FormData(this);
+    $.ajax({
+      url: '/api/upload',
+      type: 'POST',
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(data) {
+        resetUploadStatus();
+
+        if (data.status == 'success') {
+          $('#image-result').attr('src', data.image_url);
+          $('.result-view').show();
+          $('.upload-form').hide();
+
+          refreshImageList();
+          return;
+        }
+
+        if (data.status == 'error') {
+          showError(data.message);
+          return;
+        }
+
+        showError("An unknown error occurred");
+        return;
+      },
+      error: function(o, e, es) {
+        resetUploadStatus();
+        showError(es);
+      }
+    });
+
+    return false;
   });
 
   refreshImageList();

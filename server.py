@@ -164,7 +164,7 @@ def api_list_images():
         items = ImageItem.query\
                     .filter_by(visible=True)\
                     .order_by(ImageItem.timestamp.desc())\
-                    .limit(20)\
+                    .limit(15)\
                     .all()
 
     except sqlalchemy.exc.SQLAlchemyError:

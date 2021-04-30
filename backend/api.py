@@ -35,7 +35,7 @@ class API:
                 config.FILTER_PATH, filter_name)).convert("RGBA")
             process_image = Image.fromarray(image)
 
-            for face_location in face_location_list:
+            for face_location, face_landmarks in [(face_location_list[e], face_landmarks_list[e]) for e in range(len(face_location_list))]:
 
                 # draw rectangle around face
                 # top right bottom left
@@ -64,8 +64,7 @@ class API:
                     process_image.paste(filter_image, filter_pos,
                                         mask=filter_image.split()[3])
 
-            for face_landmarks in face_landmarks_list:
-                if filter_part == "glass":
+                elif filter_part == "glass":
                     ratio = width / filter_image.size[0] * 1.0
                     left_eye = face_landmarks['left_eye']
                     print(left_eye)
@@ -83,8 +82,8 @@ class API:
                     print(nose_tip)
                     filter_image = filter_image.resize(
                         ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
-                    filter_pos = ((int)(nose_tip[0][0] - 1.15*filter_image.size[1]),
-                                  (int)(nose_tip[0][1] - filter_image.size[1]/2))
+                    filter_pos = ((int)((sum([e[0] for e in nose_tip]) / len(nose_tip)) - (filter_image.size[0] / 2)),
+                                  (int)((sum([e[1] for e in nose_tip]) / len(nose_tip)) - (filter_image.size[1] / 2)))
 
                     print(filter_pos)
                     process_image.paste(filter_image, filter_pos,
@@ -101,7 +100,6 @@ class API:
                                   (int)((sum([e[1] for e in chin]) / len(chin)) - (filter_image.size[1] / 4)))
                     process_image.paste(
                         filter_image, filter_pos, mask=filter_image.split()[3])
-                print(face_landmarks)
 
             process_image.save(os.path.join(
                 config.PROCESSED_MEDIA_PATH, filename))

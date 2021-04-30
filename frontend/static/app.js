@@ -9,27 +9,27 @@ function timeDifference(current, previous) {
     var elapsed = current - previous;
 
     if (elapsed < msPerMinute) {
-         return Math.round(elapsed/1000) + ' seconds ago';   
+         return Math.round(elapsed/1000) + 's';   
     }
 
     else if (elapsed < msPerHour) {
-         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+         return Math.round(elapsed/msPerMinute) + 'm';   
     }
 
     else if (elapsed < msPerDay ) {
-         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+         return Math.round(elapsed/msPerHour ) + 'h';   
     }
 
     else if (elapsed < msPerMonth) {
-        return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+        return Math.round(elapsed/msPerDay) + 'd';   
     }
 
     else if (elapsed < msPerYear) {
-        return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+        return Math.round(elapsed/msPerMonth) + 'mo';   
     }
 
     else {
-        return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+        return Math.round(elapsed/msPerYear ) + 'yr';   
     }
 }
 
@@ -48,12 +48,24 @@ function resetUploadInput() {
 }
 
 function refreshImageList() {
+  $('#image-list-spinner').show();
+  let d1 = new Date();
+  let currentTime = new Date(
+    d1.getUTCFullYear(), 
+    d1.getUTCMonth(), 
+    d1.getUTCDate(), 
+    d1.getUTCHours(), 
+    d1.getUTCMinutes(), 
+    d1.getUTCSeconds()
+  );
+
   $.ajax({
     url: '/api/list_images',
     success: function(data) {
       let html = '';
       for (i = 0; i < data.count; ++i) {
         let item = data.data[i];
+        let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
         html += `
         <div class="col-md-4">
           <div class="card mb-4 box-shadow">
@@ -62,7 +74,7 @@ function refreshImageList() {
               <p class="card-text">Uploaded by <b>${item.username}</b></p>
               <div class="d-flex justify-content-between align-items-center">
                 <span class="badge badge-primary">${item.filter_used}</span>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">${timeDiff} ago</small>
               </div>
             </div>
           </div>
@@ -70,6 +82,7 @@ function refreshImageList() {
       }
 
       $('#image-list').html(html);
+      $('#image-list-spinner').hide();
     }
   });
 }

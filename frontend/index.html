@@ -53,6 +53,11 @@
 
       <section class="jumbotron text-center">
         <div class="container">
+          <noscript>
+            <div class="alert alert-danger" role="alert">
+              JavaScript must be enabled to use this site!
+            </div>
+          </noscript>
           <h1 class="jumbotron-heading">Upload Photo</h1>
           <p class="lead text-muted">Apply a filter to your face here!</p>
           <form class="upload-form" action="{{ url_for('api_upload') }}" method="POST" enctype="multipart/form-data">
@@ -103,9 +108,8 @@
           <h2 class="text-center image-list-header">
             <i class="fas fa-images"></i> Latest Images
           </h2>
-          <div class="row" id="image-list"> 
-            <h1 class="text-center" id="image-list-spinner"><i class="fas fa-spinner fa-spin"></i></h1>
-          </div>
+          <h1 class="text-center" id="image-list-spinner"><i class="fas fa-spinner fa-spin"></i></h1>
+          <div class="row" id="image-list"></div>
         </div>
       </div>
 

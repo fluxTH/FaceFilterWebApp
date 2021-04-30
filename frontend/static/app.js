@@ -155,6 +155,7 @@ $(document).ready(() => {
     $('#upload-reset-button').click();
     $('.result-view').hide();
     $('.upload-form').show();
+    window.scrollTo(0, 0);
     return false;
   });
 

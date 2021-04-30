@@ -48,8 +48,10 @@ function resetUploadInput() {
   clearError();
 }
 
-function refreshImageList() {
-  $('#image-list-spinner').show();
+function refreshImageList(showSpinner) {
+  if (showSpinner !== false)
+    $('#image-list-spinner').show();
+
   let d1 = new Date();
   let currentTime = new Date(
     d1.getUTCFullYear(), 
@@ -202,4 +204,8 @@ $(document).ready(() => {
   });
 
   refreshImageList();
+
+  setTimeout(function() {
+    refreshImageList(false);
+  }, 10000);
 });

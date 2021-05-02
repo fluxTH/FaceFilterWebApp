@@ -52,7 +52,7 @@ class ImageItem(db.Model):
 def map_image_item(item):
     return {
         'id': item.id,
-        'username': item.username,
+        'username': escape(item.username),
         'image_url': url_for('serve_processed_media', path=item.image_filename),
         'filter_used': item.filter_used,
         'face_count': item.face_count,
@@ -139,7 +139,7 @@ def api_upload():
     if success and faces_detected > 0:
         try:
             image_item = ImageItem(
-                username=escape(username),
+                username=username,
                 image_filename=filename,
                 filter_used=(
                     API.getFilterTitle(filter_filename) \

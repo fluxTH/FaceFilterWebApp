@@ -4,8 +4,7 @@ services:
   webapp:
     build: .
     volumes:
-      - ./database.sqlite3:/usr/src/app/database.sqlite3
-      - ./data:/usr/src/app/data
+      - .:/usr/src/app
     networks:
       - appnet
     restart: always

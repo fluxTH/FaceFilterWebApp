@@ -25,8 +25,8 @@ from backend.api import API
 
 app = Flask(
     config.APP_NAME,
-    template_folder=config.TEMPLATE_PATH,
-    static_folder=config.STATIC_PATH,
+    template_folder = config.TEMPLATE_PATH,
+    static_folder = config.STATIC_PATH,
 )
 
 app.config['MAX_CONTENT_LENGTH'] = config.MAX_UPLOAD_SIZE
@@ -55,7 +55,7 @@ def map_image_item(item):
         'image_url': url_for('serve_processed_media', path=item.image_filename),
         'filter_used': item.filter_used,
         'face_count': item.face_count,
-        'timestamp': int(item.timestamp.timestamp()),  # in UTC timezone
+        'timestamp': item.timestamp,  # in UTC timezone
     }
 
 
@@ -78,9 +78,9 @@ def error_resp(msg):
 @app.route("/")
 def root():
     return render_template('index.html',
-                           app_name=config.APP_NAME,
-                           filter_list=API.getFilterTupleList(),
-                           )
+       app_name=config.APP_NAME,
+       filter_list=API.getFilterTupleList(),
+   )
 
 
 @app.route("/api/upload", methods=['POST'])
@@ -127,7 +127,6 @@ def api_upload():
     try:
         (success, faces_detected) = API.process(
             filename,
-            # Bug With Spacebar # secure_filename(filter_filename) if filter_filename != 'random' else '',
             filter_filename if filter_filename != 'random' else '',
         )
     except Exception:
@@ -136,11 +135,11 @@ def api_upload():
     if success and faces_detected > 0:
         try:
             image_item = ImageItem(
-                username=username,
-                image_filename=filename,
-                filter_used=API.getFilterTitle(filter_filename) if filter_filename != 'random' else 'Random',
-                face_count=faces_detected,
-                visible=visible,
+                username = username,
+                image_filename = filename,
+                filter_used = API.getFilterTitle(filter_filename) if filter_filename != 'random' else 'Random',
+                face_count = faces_detected,
+                visible = visible,
             )
 
             db.session.add(image_item)
@@ -192,11 +191,6 @@ def serve_original_media(path):
 
 
 # DEBUG SERVER ENTRYPOINT
-
-@app.route("/api/test")
-def test():
-    return API.test()
-
 
 if __name__ == "__main__":
     # run debug server

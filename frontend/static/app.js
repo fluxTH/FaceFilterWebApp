@@ -52,15 +52,7 @@ function refreshImageList(showSpinner) {
   if (showSpinner !== false)
     $('#image-list-spinner').show();
 
-  let d1 = new Date();
-  let currentTime = new Date(
-    d1.getUTCFullYear(), 
-    d1.getUTCMonth(), 
-    d1.getUTCDate(), 
-    d1.getUTCHours(), 
-    d1.getUTCMinutes(), 
-    d1.getUTCSeconds()
-  );
+  let currentTime = new Date();
 
   let errorTail = '. Please try again later.';
 
@@ -74,7 +66,8 @@ function refreshImageList(showSpinner) {
         if (data.count > 0) {
           for (i = 0; i < data.count; ++i) {
             let item = data.data[i];
-            let timeDiff = timeDifference(currentTime, item.timestamp * 1000);
+            let d = Date.parse(item.timestamp);
+            let timeDiff = timeDifference(currentTime, d);
             html += `
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">

@@ -71,7 +71,7 @@ function refreshImageList(showSpinner) {
             html += `
             <div class="col-md-4">
               <div class="card mb-4 box-shadow">
-                <img class="card-img-top" src="${item.image_url}">
+                <a href="${item.image_url}" target="_blank"><img class="card-img-top" src="${item.image_url}"></a>
                 <div class="card-body">
                   <p class="card-text">Uploaded by <b>${item.username}</b></p>
                   <div class="d-flex justify-content-between align-items-center">

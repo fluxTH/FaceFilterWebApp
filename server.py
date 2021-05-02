@@ -7,6 +7,7 @@ from flask import (
     jsonify,
     send_from_directory,
     url_for,
+    escape,
 )
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy.exc
@@ -138,7 +139,7 @@ def api_upload():
     if success and faces_detected > 0:
         try:
             image_item = ImageItem(
-                username=username,
+                username=escape(username),
                 image_filename=filename,
                 filter_used=(
                     API.getFilterTitle(filter_filename) \

@@ -43,9 +43,9 @@ class API:
 
                 # draw rectangle around face
                 # top right bottom left
-                d = ImageDraw.Draw(process_image, "RGB")
-                d.rectangle((face_location[3], face_location[0],
-                             face_location[1], face_location[2]), outline=(0, 0, 0))
+                # d = ImageDraw.Draw(process_image, "RGB")
+                # d.rectangle((face_location[3], face_location[0],
+                #              face_location[1], face_location[2]), outline=(0, 0, 0))
                 width = face_location[1] - face_location[3]
                 height = face_location[2] - face_location[0]
 
@@ -64,32 +64,32 @@ class API:
                         ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
                     filter_pos = (face_location[3] - (int)(
                         (filter_image.size[0] - width) / 2), face_location[0] - filter_image.size[1])
-                    print(filter_pos)
+                    # print(filter_pos)
                     process_image.paste(filter_image, filter_pos,
                                         mask=filter_image.split()[3])
 
                 elif filter_part == "glass":
                     ratio = width / filter_image.size[0] * 1.0
                     left_eye = face_landmarks['left_eye']
-                    print(left_eye)
+                    # print(left_eye)
                     filter_image = filter_image.resize(
                         ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
                     filter_pos = ((int)(left_eye[0][0] - filter_image.size[1]/2),
                                   (int)(left_eye[0][1] - filter_image.size[1]/2))
 
-                    print(filter_pos)
+                    # print(filter_pos)
                     process_image.paste(filter_image, filter_pos,
                                         mask=filter_image.split()[3])
                 elif filter_part == "nose":
                     ratio = width / filter_image.size[0] * 1.2
                     nose_tip = face_landmarks['nose_tip']
-                    print(nose_tip)
+                    # print(nose_tip)
                     filter_image = filter_image.resize(
                         ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
                     filter_pos = ((int)((sum([e[0] for e in nose_tip]) / len(nose_tip)) - (filter_image.size[0] / 2)),
                                   (int)((sum([e[1] for e in nose_tip]) / len(nose_tip)) - (filter_image.size[1] / 2)))
 
-                    print(filter_pos)
+                    # print(filter_pos)
                     process_image.paste(filter_image, filter_pos,
                                         mask=filter_image.split()[3])
                 elif filter_part == "chin":
@@ -99,7 +99,7 @@ class API:
                     filter_image = filter_image.resize(
                         ((int)(filter_image.size[0] * ratio), (int)(filter_image.size[1] * ratio)))
 
-                    d.polygon(chin, outline=(0, 0, 0))
+                    # d.polygon(chin, outline=(0, 0, 0))
                     filter_pos = ((int)((sum([e[0] for e in chin]) / len(chin)) - (filter_image.size[0] / 2)),
                                   (int)((sum([e[1] for e in chin]) / len(chin)) - (filter_image.size[1] / 4)))
                     process_image.paste(

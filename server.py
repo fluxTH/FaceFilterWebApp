@@ -98,7 +98,8 @@ def api_upload():
     if len(username) < 3 or len(username) > 255:
         return error_resp('Name must be between 3 and 255 characters')
 
-    allowed_filter_filenames = API.getFilterList() + ['random', 'true_random']
+    special_filter_values = ['random', 'true_random']
+    allowed_filter_filenames = API.getFilterList() + special_filter_values
     if filter_filename not in allowed_filter_filenames:
         return error_resp('Invalid filter')
 
@@ -139,8 +140,10 @@ def api_upload():
             image_item = ImageItem(
                 username=username,
                 image_filename=filename,
-                filter_used=API.getFilterTitle(
-                    filter_filename) if filter_filename != 'random' else 'Random',
+                filter_used=(
+                    API.getFilterTitle(filter_filename) \
+                    if filter_filename not in special_filter_values \
+                    else filter_filename.replace('_', ' ').title()),
                 face_count=faces_detected,
                 visible=visible,
             )

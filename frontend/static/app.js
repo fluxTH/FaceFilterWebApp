@@ -145,6 +145,7 @@ $(document).ready(() => {
     let extension = filename.split('.').pop();
     if (!['png', 'jpg', 'jpeg'].includes(extension)) {
       alert('Only image files with extension "jpg", "png" and "jpeg" are allowed.');
+      $(this).val(null);
       return;
     }
 

@@ -75,7 +75,8 @@ function refreshImageList(showSpinner) {
                 <div class="card-body">
                   <p class="card-text">Uploaded by <b>${item.username}</b></p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <span class="badge badge-primary">${item.filter_used}</span>
+                    <span class="badge badge-primary"><i class="fas fa-magic"></i> ${item.filter_used}</span>
+                    <span class="badge badge-secondary"><i class="far fa-smile-wink"></i> ${item.face_count}</span>
                     <small class="text-muted">${timeDiff} ago</small>
                   </div>
                 </div>

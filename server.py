@@ -185,9 +185,9 @@ def serve_processed_media(path):
     return send_from_directory(config.PROCESSED_MEDIA_PATH, path)
 
 
-@app.route("/media/orig/<path:path>")
-def serve_original_media(path):
-    return send_from_directory(config.ORIGINAL_MEDIA_PATH, path)
+#@app.route("/media/orig/<path:path>")
+#def serve_original_media(path):
+#    return send_from_directory(config.ORIGINAL_MEDIA_PATH, path)
 
 
 # DEBUG SERVER ENTRYPOINT

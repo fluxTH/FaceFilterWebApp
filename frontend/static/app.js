@@ -142,6 +142,12 @@ $(document).ready(() => {
     }
 
     let filename = filepath.split('\\').pop();
+    let extension = filename.split('.').pop();
+    if (!['png', 'jpg', 'jpeg'].includes(extension)) {
+      alert('Only image files with extension "jpg", "png" and "jpeg" are allowed.');
+      return;
+    }
+
     $('#image-path-label').text(filename).removeClass('text-muted');
 
     clearError();

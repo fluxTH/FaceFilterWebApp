@@ -22,8 +22,11 @@ class API:
     @staticmethod
     def process(filename, filter_name):
         filter_image_list = API.getFilterList()
+        true_random = False
 
         if (filter_name not in filter_image_list):
+            if (filter_name == "true_random"):
+                true_random = True
             filter_name = filter_image_list[random.randint(
                 0, len(filter_image_list) - 1)]
             filter_part = filter_name.split("_")[0]
@@ -46,6 +49,7 @@ class API:
                 # d = ImageDraw.Draw(process_image, "RGB")
                 # d.rectangle((face_location[3], face_location[0],
                 #              face_location[1], face_location[2]), outline=(0, 0, 0))
+
                 width = face_location[1] - face_location[3]
                 height = face_location[2] - face_location[0]
 
@@ -104,6 +108,13 @@ class API:
                                   (int)((sum([e[1] for e in chin]) / len(chin)) - (filter_image.size[1] / 4)))
                     process_image.paste(
                         filter_image, filter_pos, mask=filter_image.split()[3])
+                
+                if true_random:
+                    filter_name = filter_image_list[random.randint(
+                    0, len(filter_image_list) - 1)]
+                    filter_part = filter_name.split("_")[0]
+                    filter_image = Image.open(os.path.join(
+                        config.FILTER_PATH, filter_name)).convert("RGBA")
 
             process_image.save(os.path.join(
                 config.PROCESSED_MEDIA_PATH, filename))

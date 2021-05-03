@@ -100,7 +100,7 @@ function refreshImageList(showSpinner) {
       showILError('Unknown Error');
     },
     error: function(o, e, es) {
-      if (es == '') es = o.statusCode; 
+      if (es === '') es = 'HTTP ' + o.status; 
       showILError(e + ' ' + es);
     }
   });
@@ -215,7 +215,7 @@ $(document).ready(() => {
       error: function(o, e, es) {
         window.scrollTo(0, 0);
         resetUploadStatus();
-        if (es == '') es = o.statusCode; 
+        if (es === '') es = 'HTTP ' + o.status; 
         showError(es);
       }
     });

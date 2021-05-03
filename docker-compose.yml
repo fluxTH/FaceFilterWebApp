@@ -15,8 +15,10 @@ services:
     image: nginx:latest
     ports:
       - "80:80/tcp"
+      - "443:443/tcp"
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
       - ./frontend/static:/var/www/comengess/static
       - ./data:/var/www/comengess/data
     networks:

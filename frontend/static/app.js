@@ -215,7 +215,8 @@ $(document).ready(() => {
       error: function(o, e, es) {
         window.scrollTo(0, 0);
         resetUploadStatus();
-        if (es === '') es = 'HTTP ' + o.status; 
+        if (o.status === 413) es = 'Image filesize exceeded the maximum allowed';
+        else if (es === '') es = 'HTTP ' + o.status; 
         showError(es);
       }
     });

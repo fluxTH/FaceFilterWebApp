@@ -48,6 +48,21 @@ function resetUploadInput() {
   clearError();
 }
 
+function errorString(es, o) {
+    if (o.status === 413) es = 'Image filesize exceeded the maximum allowed';
+    else if (o.status === 502) es = 'Bad Gateway, please try again later';
+    else if (o.status === 503) es = 'Service Unavaliable, please try again later';
+    else if (o.status === 504) es = 'Gateway Timeout, please try again later';
+    else if (es === '') {
+      if (o.status === 0)
+        es = 'Cannot connect to the server';
+      else
+        es = 'HTTP ' + o.status;
+    }
+
+    return es;
+}
+
 function refreshImageList(showSpinner) {
   if (showSpinner !== false)
     $('#image-list-spinner').show();
@@ -100,8 +115,7 @@ function refreshImageList(showSpinner) {
       showILError('Unknown Error');
     },
     error: function(o, e, es) {
-      if (es === '') es = 'HTTP ' + o.status; 
-      showILError(e + ' ' + es);
+      showILError(errorString(es, o));
     }
   });
 }
@@ -109,6 +123,7 @@ function refreshImageList(showSpinner) {
 function showError(msg) {
   $('#upload-error-alert').find('span.error-message').text(msg);
   $('#upload-error-alert').show();
+  window.scrollTo(0, 0);
 }
 
 function clearError() {
@@ -174,8 +189,16 @@ $(document).ready(() => {
     return false;
   });
 
-  $('.upload-form').submit(function() {
+  $('.upload-form').submit(function(e) {
+    e.preventDefault();
     clearError();
+
+    let filesize = $('#image-file-input')[0].files[0].size;
+    if (filesize > 12 * 1024 * 1024) {
+        showError("Image filesize exceeded the maximum allowed");
+        return false;  
+    }
+
     showUploadStatus();
 
     let usernameInput = $('input[name=username]');
@@ -215,9 +238,8 @@ $(document).ready(() => {
       error: function(o, e, es) {
         window.scrollTo(0, 0);
         resetUploadStatus();
-        if (o.status === 413) es = 'Image filesize exceeded the maximum allowed';
-        else if (es === '') es = 'HTTP ' + o.status; 
-        showError(es);
+
+        showError(errorString(es, o));
       }
     });
 

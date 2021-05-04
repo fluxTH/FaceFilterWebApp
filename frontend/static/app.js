@@ -246,6 +246,11 @@ $(document).ready(() => {
     return false;
   });
 
+  $('.jump-top').click(function() {
+    window.scrollTo(0, 0);
+    return false;
+  });
+
   refreshImageList();
 
   setInterval(function() {

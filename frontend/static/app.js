@@ -53,6 +53,7 @@ function errorString(es, o) {
     else if (o.status === 502) es = 'Bad Gateway, please try again later';
     else if (o.status === 503) es = 'Service Unavaliable, please try again later';
     else if (o.status === 504) es = 'Gateway Timeout, please try again later';
+    else if (o.status === 521) es = 'Web server is currently offline, please try again later';
     else if (es === '') {
       if (o.status === 0)
         es = 'Cannot connect to the server';

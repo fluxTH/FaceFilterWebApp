@@ -11,21 +11,21 @@ function timeDifference(current, previous) {
     return 'just now';
   
   if (elapsed < msPerMinute) 
-    return Math.round(elapsed/1000) + 's';
+    return Math.round(elapsed/1000) + 's ago';
   
   if (elapsed < msPerHour) 
-    return Math.round(elapsed/msPerMinute) + 'm';
+    return Math.round(elapsed/msPerMinute) + 'm ago';
   
   if (elapsed < msPerDay) 
-    return Math.round(elapsed/msPerHour) + 'h';
+    return Math.round(elapsed/msPerHour) + 'h ago';
   
   if (elapsed < msPerMonth) 
-    return Math.round(elapsed/msPerDay) + 'd';
+    return Math.round(elapsed/msPerDay) + 'd ago';
   
   if (elapsed < msPerYear) 
-    return Math.round(elapsed/msPerMonth) + 'mo';
+    return Math.round(elapsed/msPerMonth) + 'mo ago';
   
-  return Math.round(elapsed/msPerYear) + 'y';
+  return Math.round(elapsed/msPerYear) + 'y ago';
 }
 
 function readImageFile(input, cb) {
@@ -88,7 +88,7 @@ function refreshImageList(showSpinner) {
                   <div class="d-flex justify-content-between align-items-center">
                     <span class="badge badge-primary"><i class="fas fa-magic"></i> ${item.filter_used}</span>
                     <span class="badge badge-secondary"><i class="far fa-smile-wink"></i> ${item.face_count}</span>
-                    <small class="text-muted">${timeDiff} ago</small>
+                    <small class="text-muted">${timeDiff}</small>
                   </div>
                 </div>
               </div>

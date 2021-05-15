@@ -24,4 +24,4 @@ Production server will run on http://0.0.0.0/ and https://0.0.0.0/.
 
 The current setup is to use a domain through CloudFlare, edit `nginx/conf/comengess.conf` to change target domain.
 
-NOTE: The SSL certificate and keyfile in `nginx/certs` is a CloudFlare Client Certificate, nothing is leaked here :)
+NOTE: The SSL certificate and keyfile in `nginx/certs` is a CloudFlare Origin Certificate, nothing is leaked here :)
